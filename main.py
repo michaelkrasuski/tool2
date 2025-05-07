@@ -21,10 +21,8 @@ def get_uczelnia_code(nazwa):
 
 @app.post("/webhook")
 async def webhook(data: InputData):
-    # Obsługa testu weryfikacyjnego
     if data.input.startswith("test"):
         return OutputData(output=data.input)
-    # Obsługa pobierania osób
     if data.input.startswith("pobierz osoby z "):
         uczelnia_nazwa = data.input.replace("pobierz osoby z ", "")
         uczelnia_code = get_uczelnia_code(uczelnia_nazwa)
@@ -37,7 +35,7 @@ async def webhook(data: InputData):
                 for osoba in osoby
                 if osoba["uczelnia"] == uczelnia_code
             ]
-            return OutputData(output=json.dumps(team_members))
+            return OutputData(output=json.dumps(team_members, ensure_ascii=False))
         except requests.RequestException as e:
             return OutputData(output=f"Błąd: {str(e)}")
     return OutputData(output="Nieprawidłowe zapytanie")
